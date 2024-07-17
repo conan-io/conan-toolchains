@@ -1,0 +1,9 @@
+sources:
+  "2.3.0":
+    url: "https://github.com/pytorch/pytorch/releases/download/v2.3.0/pytorch-v2.3.0.tar.gz"
+    sha256: "69579513b26261bbab32e13b7efc99ad287fcf3103087f2d4fdf1adacd25316f"
+
+patches:
+  "2.3.0":
+    - patch_file: "patches/deps.patch"
+      patch_description: "cmake fixes"
