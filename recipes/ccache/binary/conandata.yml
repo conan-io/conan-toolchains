@@ -1,0 +1,14 @@
+sources:
+  "4.10.2":
+    Linux:
+      x86_64:
+        url: "https://github.com/ccache/ccache/releases/download/v4.10.2/ccache-4.10.2-linux-x86_64.tar.xz"
+        sha256: "80cab87bd510eca796467aee8e663c398239e0df1c4800a0b5dff11dca0b4f18"
+    Macos:
+      universal:
+        url: "https://github.com/ccache/ccache/releases/download/v4.10.2/ccache-4.10.2-darwin.tar.gz"
+        sha256: "d90514fff15943a8607e84e3f42d45f823915a92f99984f3fc88202f6295d1e8"
+    Windows:
+      x86_64:
+        url: "https://github.com/ccache/ccache/releases/download/v4.10.2/ccache-4.10.2-windows-x86_64.zip"
+        sha256: "6252f081876a9a9f700fae13a5aec5d0d486b28261d7f1f72ac11c7ad9df4da9"
