@@ -1,0 +1,4 @@
+sources:
+  "4.0.10":
+    url: "https://github.com/emscripten-core/emsdk/archive/4.0.10.tar.gz"
+    sha256: "2497b55ddbba9bf9be2d18cfca3e973d40a0cfaa8d18f6caacb882a65b2faf1c"

@@ -1,0 +1,51 @@
+name: Test all recipes
+
+on:
+  push:
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  create:
+    name: Create and test Conan recipes
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install requirements
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Cache local Conan repo
+        uses: actions/cache@v3
+        with:
+          path: ~/.conan2/p
+          key: ${{ runner.os }}-conan2-${{ hashFiles('recipes/**') }}
+          restore-keys: |
+            ${{ runner.os }}-conan2-
+
+      - name: Get changed recipes
+        id: changed-recipes
+        uses: tj-actions/changed-files@ed68ef82c095e0d48ec87eccea555d944a631a4c # v46
+        with:
+          files: |
+            recipes/**
+          files_ignore: recipes/*.{md,txt}
+
+      - name: Build and test recipes
+        if: steps.changed-recipes.outputs.any_changed == 'true'
+        env:
+          BUILD_RECIPES: ${{ steps.changed-recipes.outputs.all_changed_files }}
+        run: |
+          conan profile detect
+          conan config install conan_config
+          python .github/scripts/build_recipes.py
