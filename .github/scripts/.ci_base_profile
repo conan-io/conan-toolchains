@@ -1,0 +1,12 @@
+include(default)
+
+[conf]
+tools.build.cross_building:can_run=True
+
+# Verbosity
+tools.build:verbosity=verbose
+tools.compilation:verbosity=verbose
+
+# Package Manager Configuration
+*/system:tools.system.package_manager:mode=install
+*/system:tools.system.package_manager:sudo=True

@@ -1,0 +1,2 @@
+conan @ git+https://github.com/conan-io/conan.git@develop2
+PyYAML
