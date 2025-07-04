@@ -1,6 +1,6 @@
 [tool.ruff]
 output-format = "full"
-src = ["recipes"]
+src = ["recipes", ".github/scripts"]
 fix = true
 show-fixes = true
 line-length = 120

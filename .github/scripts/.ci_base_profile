@@ -1,0 +1,6 @@
+include(default)
+
+[conf]
+# Verbosity
+tools.build:verbosity=verbose
+tools.compilation:verbosity=verbose

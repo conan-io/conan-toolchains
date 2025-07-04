@@ -1,0 +1,12 @@
+include(./.base)
+
+[settings]
+arch=wasm64
+
+[conf]
+# In this early stage of wasm64, ALLOW_MEMORY_GROWTH is not having effect. Also it may not be the most efficient solution.
+# wasm64 for now needs to declare INITIAL_MEMORY as the maximum memory
+tools.build:exelinkflags+=['-sMAXIMUM_MEMORY=16GB', '-sINITIAL_MEMORY=16GB', '-sASSERTIONS']
+tools.build:sharedlinkflags+=['-sMAXIMUM_MEMORY=16GB', '-sINITIAL_MEMORY=16GB', '-sASSERTIONS']
+
+# Node version from emsdk/4.0.10 can not run a wasm64 binary. See more details in README

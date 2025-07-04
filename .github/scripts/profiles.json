@@ -1,0 +1,9 @@
+{
+  "emsdk": {
+    "4.0.10": {
+      "profiles": [
+        "emsdk/wasm32"
+      ]
+    }
+  }
+}

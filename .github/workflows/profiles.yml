@@ -1,0 +1,41 @@
+name: Manually publish profile releases
+
+on:
+  workflow_dispatch:
+    inputs:
+      recipe:
+        description: 'Recipe to publish profiles for'
+        required: true
+      version:
+        description: 'Version of the packaged profiles'
+        required: true
+
+jobs:
+  create:
+    name: Create a profile release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v4
+
+      - name: Set variables
+        id: vars
+        run: |
+          echo "RECIPE=${{ github.event.inputs.recipe }}" >> $GITHUB_ENV
+          echo "VERSION=${{ github.event.inputs.version }}" >> $GITHUB_ENV
+          echo "ZIP_NAME=${{ github.event.inputs.recipe }}-${{ github.event.inputs.version }}-profiles.zip" >> $GITHUB_ENV
+
+      - name: Zip profile folder
+        run: |
+          mkdir -p dist
+          cd conan_config
+          zip -r "../dist/$ZIP_NAME" "profiles/$RECIPE"
+
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ env.ZIP_NAME }}
+          name: ${{ env.ZIP_NAME }}
+          files: dist/${{ env.ZIP_NAME }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
