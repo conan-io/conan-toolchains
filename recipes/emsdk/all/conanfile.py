@@ -88,7 +88,9 @@ class EmSDKConan(ConanFile):
         if not cross_building(self):
             self.run("embuilder build MINIMAL", env=["conanemsdk", "conanrun"])  # force cache population
             # Avoid cache failures in case this package is uploaded as paths in sanity.txt are absolute
-            os.remove(os.path.join(self._em_cache, "sanity.txt"))
+            sanity_path = os.path.join(self._em_cache, "sanity.txt")
+            if os.path.exists(sanity_path):
+                os.remove(sanity_path)
 
     def _define_tool_var(self, value):
         suffix = ".bat" if self.settings.os == "Windows" else ""
