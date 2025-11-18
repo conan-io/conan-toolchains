@@ -40,7 +40,8 @@ class libtorchRecipe(ConanFile):
         self.tool_requires("protobuf/<host_version>")
 
         if not is_windows:
-            self.requires("sleef/[<3.6]")
+            self.requires("sleef/[>=3.6]") #on mac we need 3.6 or higher...
+            #self.requires("sleef/[<3.6]")
 
     def validate(self):
         check_min_cppstd(self, "17")
