@@ -3,7 +3,7 @@ from pathlib import Path
 
 from conan import ConanFile
 from conan.tools.build import cross_building
-from conan.tools.env import Environment, VirtualBuildEnv
+from conan.tools.env import VirtualBuildEnv
 from conan.tools.files import chdir, copy, get
 from conan.tools.layout import basic_layout
 
@@ -60,14 +60,6 @@ class EmSDKConan(ConanFile):
         return os.path.join("bin", "node", subfolders[0].name, "bin")
 
     def generate(self):
-        env = Environment()
-        env.prepend_path("PATH", self._paths)
-        env.define_path("EMSDK", self._emsdk)
-        env.define_path("EMSCRIPTEN", self._emscripten)
-        env.define_path("EM_CONFIG", self._em_config)
-        env.define_path("EM_CACHE", self._em_cache)
-        env.vars(self, scope="emsdk").save_script("emsdk_env_file")
-
         # To avoid issues when cross-compiling or with not common arch in profiles we need to set EMSDK_ARCH
         # This is important for the emsdk install command
         env = VirtualBuildEnv(self)
