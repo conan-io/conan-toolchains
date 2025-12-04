@@ -3,7 +3,7 @@ from pathlib import Path
 
 from conan import ConanFile
 from conan.tools.build import cross_building
-from conan.tools.env import VirtualBuildEnv
+from conan.tools.env import Environment, VirtualBuildEnv
 from conan.tools.files import chdir, copy, get
 from conan.tools.layout import basic_layout
 
@@ -78,11 +78,19 @@ class EmSDKConan(ConanFile):
         copy(self, "LICENSE", src=self.source_folder, dst=os.path.join(self.package_folder, "licenses"))
         copy(self, "*", src=self.source_folder, dst=os.path.join(self.package_folder, "bin"))
         if not cross_building(self):
-            self.run("embuilder build MINIMAL", env=["conanemsdk", "conanrun"])  # force cache population
-            # Avoid cache failures in case this package is uploaded as paths in sanity.txt are absolute
-            sanity_path = os.path.join(self._em_cache, "sanity.txt")
-            if os.path.exists(sanity_path):
-                os.remove(sanity_path)
+            env = Environment()
+            env.prepend_path("PATH", self._paths)
+            env.define_path("EMSDK", self._emsdk)
+            env.define_path("EMSCRIPTEN", self._emscripten)
+            env.define_path("EM_CONFIG", self._em_config)
+            env.define_path("EM_CACHE", self._em_cache)
+            with env.vars(self, scope="emsdk").apply():
+                self.run("which embuilder")
+                self.run("embuilder build MINIMAL", env=["conanrun"])  # force cache population
+                # Avoid cache failures in case this package is uploaded as paths in sanity.txt are absolute
+                sanity_path = os.path.join(self._em_cache, "sanity.txt")
+                if os.path.exists(sanity_path):
+                    os.remove(sanity_path)
 
     def _define_tool_var(self, value):
         suffix = ".bat" if self.settings.os == "Windows" else ""
