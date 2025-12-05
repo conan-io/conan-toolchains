@@ -83,7 +83,7 @@ This repository includes the following profiles:
 
 ⚠️ WASM64 caveats:
 
-The latest node version `emsdk/4.0.10` installs is the `node/22.16.0`, which can not run directly wasm64 binaries.
+The latest node version `emsdk/4.0.21` installs is the `node/22.16.0`, which can not run directly wasm64 binaries.
 Also, it is not valid to compile wasm64 with `-sMIN_NODE_VERSION=221600`, see following error:
 ```
 em++: warning: MIN_NODE_VERSION=221600 is not compatible with MEMORY64 (230000 or above required) [-Wcompatibility]

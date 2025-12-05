@@ -2,8 +2,7 @@ import os
 from pathlib import Path
 
 from conan import ConanFile
-from conan.tools.build import cross_building
-from conan.tools.env import Environment, VirtualBuildEnv
+from conan.tools.env import VirtualBuildEnv
 from conan.tools.files import chdir, copy, get
 from conan.tools.layout import basic_layout
 
@@ -19,8 +18,6 @@ class EmSDKConan(ConanFile):
     license = "MIT"
     package_type = "application"
     settings = "os", "arch"
-    upload_policy = "skip"
-    build_policy = "missing"
 
     def layout(self):
         basic_layout(self, src_folder="src")
@@ -29,28 +26,8 @@ class EmSDKConan(ConanFile):
         get(self, **self.conan_data["sources"][self.version], destination=self.source_folder, strip_root=True)
 
     @property
-    def _relative_paths(self):
-        return ["bin", os.path.join("bin", "upstream", "emscripten")]
-
-    @property
-    def _paths(self):
-        return [os.path.join(self.package_folder, path) for path in self._relative_paths]
-
-    @property
-    def _emsdk(self):
-        return os.path.join(self.package_folder, "bin")
-
-    @property
     def _emscripten(self):
         return os.path.join(self.package_folder, "bin", "upstream", "emscripten")
-
-    @property
-    def _em_config(self):
-        return os.path.join(self.package_folder, "bin", ".emscripten")
-
-    @property
-    def _em_cache(self):
-        return os.path.join(self.package_folder, "bin", ".emscripten_cache")
 
     @property
     def _node_path(self):
@@ -77,20 +54,13 @@ class EmSDKConan(ConanFile):
     def package(self):
         copy(self, "LICENSE", src=self.source_folder, dst=os.path.join(self.package_folder, "licenses"))
         copy(self, "*", src=self.source_folder, dst=os.path.join(self.package_folder, "bin"))
-        if not cross_building(self):
-            env = Environment()
-            env.prepend_path("PATH", self._paths)
-            env.define_path("EMSDK", self._emsdk)
-            env.define_path("EMSCRIPTEN", self._emscripten)
-            env.define_path("EM_CONFIG", self._em_config)
-            env.define_path("EM_CACHE", self._em_cache)
-            with env.vars(self, scope="emsdk").apply():
-                self.run("which embuilder")
-                self.run("embuilder build MINIMAL", env=["conanrun"])  # force cache population
-                # Avoid cache failures in case this package is uploaded as paths in sanity.txt are absolute
-                sanity_path = os.path.join(self._em_cache, "sanity.txt")
-                if os.path.exists(sanity_path):
-                    os.remove(sanity_path)
+
+    def finalize(self):
+        copy(self, "*", src=self.immutable_package_folder, dst=self.package_folder)
+        embuilder = os.path.join(
+            self._emscripten, "embuilder" if self.info.settings.os != "Windows" else "embuilder.bat"
+        )
+        self.run(f"{embuilder} build MINIMAL")
 
     def _define_tool_var(self, value):
         suffix = ".bat" if self.settings.os == "Windows" else ""
@@ -98,7 +68,7 @@ class EmSDKConan(ConanFile):
         return path
 
     def package_info(self):
-        self.cpp_info.bindirs = self._relative_paths + [self._node_path]
+        self.cpp_info.bindirs = ["bin", os.path.join("bin", "upstream", "emscripten"), self._node_path]
         self.cpp_info.includedirs = []
         self.cpp_info.libdirs = []
         self.cpp_info.resdirs = []
@@ -119,10 +89,10 @@ class EmSDKConan(ConanFile):
         )
         self.conf_info.prepend("tools.cmake.cmaketoolchain:user_toolchain", toolchain)
 
-        self.buildenv_info.define_path("EMSDK", self._emsdk)
+        self.buildenv_info.define_path("EMSDK", os.path.join(self.package_folder, "bin"))
         self.buildenv_info.define_path("EMSCRIPTEN", self._emscripten)
-        self.buildenv_info.define_path("EM_CONFIG", self._em_config)
-        self.buildenv_info.define_path("EM_CACHE", self._em_cache)
+        self.buildenv_info.define_path("EM_CONFIG", os.path.join(self.package_folder, "bin", ".emscripten"))
+        self.buildenv_info.define_path("EM_CACHE", os.path.join(self.package_folder, "bin", ".emscripten_cache"))
 
         compiler_executables = {
             "c": self._define_tool_var("emcc"),
