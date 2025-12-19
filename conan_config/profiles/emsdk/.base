@@ -5,12 +5,12 @@ compiler.cppstd=17
 compiler.libcxx=libc++
 # Choose between both types of multithreading support (or none)
 # compiler.threads=<posix|wasm_workers>
-compiler.version=4.0.21
+compiler.version=4.0.22
 os=Emscripten
 
 [tool_requires]
 ninja/[*]
-emsdk/4.0.21
+emsdk/4.0.22
 
 [conf]
 tools.build:exelinkflags+=['-sALLOW_MEMORY_GROWTH=1']

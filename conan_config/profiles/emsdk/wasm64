@@ -9,4 +9,4 @@ arch=wasm64
 tools.build:exelinkflags+=['-sMAXIMUM_MEMORY=16GB', '-sINITIAL_MEMORY=16GB', '-sASSERTIONS']
 tools.build:sharedlinkflags+=['-sMAXIMUM_MEMORY=16GB', '-sINITIAL_MEMORY=16GB', '-sASSERTIONS']
 
-# Node version from emsdk/4.0.21 can not run a wasm64 binary. See more details in README
+# Node version from emsdk/4.0.22 can not run a wasm64 binary. See more details in README
