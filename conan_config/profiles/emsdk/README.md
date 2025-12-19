@@ -78,7 +78,6 @@ Conan will automatically inject the necessary linker flags.
 This repository includes the following profiles:
 - `wasm32`: WebAssembly 32-bit target (default).
 - `wasm64`: Experimental 64-bit WebAssembly target (for projects needing >4 GB dynamic memory).
-- `local`: Use your locally installed emsdk instead of the Conan-managed one.
 
 
 ⚠️ WASM64 caveats:
@@ -90,7 +89,32 @@ em++: warning: MIN_NODE_VERSION=221600 is not compatible with MEMORY64 (230000 o
 ```
 Thus, to be able to run an `wasm64` binary you will need to download at least `node/23` manually in your system.
 
-🛠️ For the local profile:
+### 🛠️ Local emsdk installation
+
+If you wish to use your locally installed emsdk instead of the Conan-managed one, here is the proposed emsdk profile
+
+```
+include(./.base)
+
+[platform_tool_requires]
+emsdk/[*]
+
+[conf]
+tools.build:compiler_executables={'c':'emcc', 'cpp':'em++'}
+# Add local Emscripten toolchain
+# tools.cmake.cmaketoolchain:user_toolchain=["/path/to/emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake"]
+
+[buildenv]
+CC=emcc
+CXX=em++
+AR=emar
+NM=emnm
+RANLIB=emranlib
+STRIP=emstrip
+```
+
+The `platform_tool_requires` will tell Conan to not use the `emsdk` recipe but your system installed binary
+
 - Ensure `emcc`, `em++`, `emar`, etc. are available in your `PATH`.
 - Check the `[buildenv]` section in the profile.
 - Optionally, provide your own `Emscripten.cmake` via the `user_toolchains` setting.
