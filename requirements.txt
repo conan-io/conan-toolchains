@@ -1,2 +1,0 @@
-conan>=2.18
-PyYAML
