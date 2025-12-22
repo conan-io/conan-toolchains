@@ -96,6 +96,7 @@ If you wish to use your locally installed emsdk instead of the Conan-managed one
 ```
 include(./.base)
 
+# Only if you want to use your system installation of emsdk...
 [platform_tool_requires]
 emsdk/[*]
 
