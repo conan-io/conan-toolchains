@@ -22,11 +22,13 @@ control.
 
 ## 🚀 Getting started
 
+Ensure [Conan](conan.io) is installed and available in your path.
+If it isn't, check the Conan [downloads](https://docs.conan.io/2/installation.html) page to install it.
 
-### Setup `conan-toolchains` as a [local recipe index](https://docs.conan.io/2/devops/devops_local_recipes_index.html#devops-local-recipes-index) repository
+### Setup the `conan-toolchains` repo
 
-Before adding `conan-toolchains` ensure [conan](https://github.com/conan-io/conan) is installed and available in your path.
-Check conan [downloads](https://docs.conan.io/2/installation.html) page.
+This repo can be added to Conan as a [local recipe index](https://docs.conan.io/2/devops/devops_local_recipes_index.html#devops-local-recipes-index) repository. This means that Conan will retrieve recipes from it.
+
 
 ```sh
 git clone https://github.com/conan-io/conan-toolchains.git
@@ -36,8 +38,13 @@ conan remote add conan-toolchains ./conan-toolchains
 This repository is still under active development, and no Conan remote with pre-built binaries is available yet.
 
 
-## Contributing
+## EMSDK - Emscripten
 
+There are specific profiles created to use the `emsdk` toolchain recipe.
+Read the [Emscripten Compiler Profiles for Conan readme](conan_config/profiles/emsdk/README.md) to learn more about how to use them.
+
+
+## Contributing
 
 If you wish to contribute to **conan-toolchains**, follow these steps to clone the repository
 and install the required development dependencies.
