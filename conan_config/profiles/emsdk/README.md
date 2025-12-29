@@ -79,17 +79,9 @@ This repository includes the following profiles:
 - `wasm32`: WebAssembly 32-bit target (default).
 - `wasm64`: Experimental 64-bit WebAssembly target (for projects needing >4 GB dynamic memory).
 
-### ⬇️ Installation of profiles
-
-In order to install the emsdk profiles of this repo to your Conan cache profiles folder, use the following command:
-
-```
-$ conan config install https://github.com/conan-io/conan-toolchains.git -sf=conan_config/profiles -tf=profiles
-```
-
 ### ▶️ Usage
 
-After installing the profiles, you can build your project like this:
+After installing the profiles (TBD), you can build your project like this:
 
 ```
 $ conan build <path> -pr emsdk/wasm32
