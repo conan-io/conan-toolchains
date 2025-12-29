@@ -79,17 +79,49 @@ This repository includes the following profiles:
 - `wasm32`: WebAssembly 32-bit target (default).
 - `wasm64`: Experimental 64-bit WebAssembly target (for projects needing >4 GB dynamic memory).
 
+### ⬇️ Installation of profiles
 
-⚠️ WASM64 caveats:
+In order to install the emsdk profiles of this repo to your Conan cache profiles folder, use the following command:
 
-The latest node version `emsdk/4.0.22` installs is the `node/22.16.0`, which can not run directly wasm64 binaries.
+```
+$ conan config install https://github.com/conan-io/conan-toolchains.git -sf=conan_config/profiles -tf=profiles
+```
+
+### ▶️ Usage
+
+After installing the profiles, you can build your project like this:
+
+```
+$ conan build <path> -pr emsdk/wasm32
+```
+
+### ⚠️ WASM64 caveats:
+
+The latest `node` version `emsdk/4.0.22` installs is the `22.16.0`, which can not run directly wasm64 binaries.
 Also, it is not valid to compile wasm64 with `-sMIN_NODE_VERSION=221600`, see following error:
+
 ```
 em++: warning: MIN_NODE_VERSION=221600 is not compatible with MEMORY64 (230000 or above required) [-Wcompatibility]
 ```
+
 Thus, to be able to run an `wasm64` binary you will need to download at least `node/23` manually in your system.
 
-### 🛠️ Local emsdk installation
+### 🧠 Dynamic Memory Allocation
+
+By default, WebAssembly does not allow dynamic memory growth. To enable it, you must set the following linker flag:
+
+`-s ALLOW_MEMORY_GROWTH=1`
+
+Our base profiles enable this flag by default to simplify usage.
+
+If you want to disable memory growth, simply remove or comment out the relevant line in the profile.
+
+🔎 The Conan docs explain the dynamic memory limits for each architecture.
+These are also preconfigured in the `wasm32` and `wasm64` profiles and can be
+customized as needed, including the `INITIAL_MEMORY` setting.
+
+
+## 🛠️ Local emsdk installation
 
 If you wish to use your locally installed emsdk instead of the Conan-managed one, here is the proposed emsdk profile
 
@@ -120,32 +152,3 @@ The `platform_tool_requires` will tell Conan to not use the `emsdk` recipe but y
 - Check the `[buildenv]` section in the profile.
 - Optionally, provide your own `Emscripten.cmake` via the `user_toolchains` setting.
 - Define the arch setting: `wasm`, `wasm64`, or the mostly deprecated `asm.js`.
-
-
-## ▶️ Usage
-
-After installing the profiles (TBD), you can build your project like this:
-
-```
-$ conan build <path> -pr emsdk/wasm32
-```
-
-### 🧠 Dynamic Memory Allocation
-
-By default, WebAssembly does not allow dynamic memory growth. To enable it, you must set the following linker flag:
-
-`-s ALLOW_MEMORY_GROWTH=1`
-
-Our base profiles enable this flag by default to simplify usage.
-
-If you want to disable memory growth, simply remove or comment out the relevant line in the profile.
-
-🔎 The Conan docs explain the dynamic memory limits for each architecture.
-These are also preconfigured in the `wasm32` and `wasm64` profiles and can be
-customized as needed, including the `INITIAL_MEMORY` setting.
-
-
-### 🙌 Contribute
-
-Feel free to open issues or pull requests in the `conan-toolchains` repository.
-Contributions to extend or improve these profiles are welcome!
