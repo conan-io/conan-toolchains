@@ -40,10 +40,8 @@ class bgfxToolsConan(ConanFile):
             self.requires("wayland/1.23.92")
         # INFO: miniz, tinyexr and libsquish are vendored in bgfx as well
         self.requires("miniz/3.0.2")
-        if not self.options.shared:
-            # INFO: bimg_encode and bimg_decode are only built for static bgfx
-            self.requires("tinyexr/1.0.7")
-            self.requires("libsquish/1.15")
+        self.requires("tinyexr/1.0.7")
+        self.requires("libsquish/1.15")
         # INFO: glflags and spirv-tools are vendored only. No need to add them as dependencies
 
     def validate(self):
@@ -59,14 +57,12 @@ class bgfxToolsConan(ConanFile):
             self.source_folder, "conan_cmake_project_include.cmake"
         )
         # It supports shared, but only generates bgfx as shared and all others as static
-        tc.cache_variables["BGFX_LIBRARY_TYPE"] = (
-            "SHARED" if self.options.shared else "STATIC"
-        )
+        tc.cache_variables["BGFX_LIBRARY_TYPE"] = "SHARED"
         tc.cache_variables["BGFX_BUILD_EXAMPLES"] = False
         tc.cache_variables["BGFX_BUILD_EXAMPLE_COMMON"] = False
         tc.cache_variables["BGFX_BUILD_TESTS"] = False
         tc.cache_variables["BGFX_INSTALL"] = True
-        tc.cache_variables["BGFX_BUILD_TOOLS"] = self.options.tools
+        tc.cache_variables["BGFX_BUILD_TOOLS"] = True
         tc.cache_variables["BX_AMALGAMATED"] = True
         tc.cache_variables["BGFX_AMALGAMATED"] = True
         tc.cache_variables["BGFX_OPENGLES_VERSION"] = 30
