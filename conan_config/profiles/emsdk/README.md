@@ -89,7 +89,7 @@ $ conan build <path> -pr emsdk/wasm32
 
 ### ⚠️ WASM64 caveats:
 
-The latest `node` version `emsdk/4.0.22` installs is the `22.16.0`, which can not run directly wasm64 binaries.
+The latest `node` version `emsdk/5.0.3` installs is the `22.16.0`, which can not run directly wasm64 binaries.
 Also, it is not valid to compile wasm64 with `-sMIN_NODE_VERSION=221600`, see following error:
 
 ```
