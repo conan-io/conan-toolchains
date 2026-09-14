@@ -26,8 +26,14 @@ class EmSDKConan(ConanFile):
         get(self, **self.conan_data["sources"][self.version], destination=self.source_folder, strip_root=True)
 
     @property
+    def _root(self):
+        # Avoid mixed symlink/realpath folders, which break Emscripten's sysroot builds
+        # https://github.com/conan-io/conan-toolchains/issues/14
+        return os.path.realpath(self.package_folder)
+
+    @property
     def _emscripten(self):
-        return os.path.join(self.package_folder, "bin", "upstream", "emscripten")
+        return os.path.join(self._root, "bin", "upstream", "emscripten")
 
     @property
     def _node_path(self):
@@ -85,14 +91,14 @@ class EmSDKConan(ConanFile):
             return
 
         toolchain = os.path.join(
-            self.package_folder, "bin", "upstream", "emscripten", "cmake", "Modules", "Platform", "Emscripten.cmake"
+            self._emscripten, "cmake", "Modules", "Platform", "Emscripten.cmake"
         )
         self.conf_info.prepend("tools.cmake.cmaketoolchain:user_toolchain", toolchain)
 
-        self.buildenv_info.define_path("EMSDK", os.path.join(self.package_folder, "bin"))
+        self.buildenv_info.define_path("EMSDK", os.path.join(self._root, "bin"))
         self.buildenv_info.define_path("EMSCRIPTEN", self._emscripten)
-        self.buildenv_info.define_path("EM_CONFIG", os.path.join(self.package_folder, "bin", ".emscripten"))
-        self.buildenv_info.define_path("EM_CACHE", os.path.join(self.package_folder, "bin", ".emscripten_cache"))
+        self.buildenv_info.define_path("EM_CONFIG", os.path.join(self._root, "bin", ".emscripten"))
+        self.buildenv_info.define_path("EM_CACHE", os.path.join(self._root, "bin", ".emscripten_cache"))
 
         compiler_executables = {
             "c": self._define_tool_var("emcc"),
