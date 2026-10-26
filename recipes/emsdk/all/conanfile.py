@@ -3,7 +3,7 @@ from pathlib import Path
 
 from conan import ConanFile
 from conan.tools.env import VirtualBuildEnv
-from conan.tools.files import chdir, copy, get
+from conan.tools.files import chdir, copy, download, get, save, unzip
 from conan.tools.layout import basic_layout
 from conan.tools.scm import Version
 
@@ -25,10 +25,25 @@ class EmSDKConan(ConanFile):
 
     def source(self):
         get(self, **self.conan_data["sources"][self.version], destination=self.source_folder, strip_root=True)
+        for name, port in self._ports.items():
+            download(
+                self,
+                port["url"],
+                os.path.join(self.source_folder, self._ports_archives, f"{name}.zip"),
+                sha256=port["sha256"],
+            )
 
     @property
     def _emscripten(self):
         return os.path.join(self.package_folder, "bin", "upstream", "emscripten")
+
+    @property
+    def _ports(self):
+        return self.conan_data.get("ports", {}).get(self.version, {})
+
+    @property
+    def _ports_archives(self):
+        return ".emscripten_ports"
 
     @property
     def _node_path(self):
@@ -59,6 +74,13 @@ class EmSDKConan(ConanFile):
     def finalize(self):
         copy(self, "*", src=self.immutable_package_folder, dst=self.package_folder)
         embuilder = self._define_tool_var("embuilder", self.info.settings.os)
+        # Unpack the ports where emscripten looks for them, marked with their URL, so that
+        # `embuilder` finds them up to date instead of downloading them with python's urllib
+        ports_folder = os.path.join(self._emscripten, "cache", "ports")
+        for name, port in self._ports.items():
+            port_folder = os.path.join(ports_folder, name)
+            unzip(self, os.path.join(self.package_folder, "bin", self._ports_archives, f"{name}.zip"), port_folder)
+            save(self, os.path.join(port_folder, ".emscripten_url"), port["url"] + "\n")
         self.run(f"{embuilder} build MINIMAL")
 
     def _define_tool_var(self, value, os_name=None):
