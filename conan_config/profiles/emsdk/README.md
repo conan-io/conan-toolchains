@@ -89,14 +89,39 @@ $ conan build <path> -pr emsdk/wasm32
 
 ### ⚠️ WASM64 caveats:
 
-The latest `node` version `emsdk/5.0.3` installs is the `22.16.0`, which can not run directly wasm64 binaries.
-Also, it is not valid to compile wasm64 with `-sMIN_NODE_VERSION=221600`, see following error:
+**Conan 2.31.0 or newer is recommended for `wasm64` with `emsdk/6.x`.** Emscripten
+6.0.0 added the standard `-m64` flag as an alias for the legacy `-sMEMORY64`
+setting, and 6.0.1 deprecated `-sMEMORY64`; Conan learned to prefer `-m64` for
+`compiler.version >= 6.0.0` in
+[conan-io/conan#20152](https://github.com/conan-io/conan/pull/20152), first
+released in 2.31.0. Older Conan still builds — the emitted flag is deprecated,
+not removed — but every `wasm64` compile and link reports:
+
+```
+em++: warning: MEMORY64 is deprecated (prefer the standard -m64 or --target=wasm64 flags). [-Wdeprecated]
+```
+
+The recipe's `required_conan_version` is deliberately **not** raised for this: it
+is shared with `emsdk/5.0.3`, where `-sMEMORY64` remains the correct flag, and
+`wasm32` is unaffected on every version. This is a recommendation for one
+architecture on one SDK series, not a floor for the package.
+
+The `node` bundled with the SDK is what decides whether a `wasm64` binary can be
+run at all, and it needs `node/23` or newer — `-sMIN_NODE_VERSION` below 230000
+is rejected outright:
 
 ```
 em++: warning: MIN_NODE_VERSION=221600 is not compatible with MEMORY64 (230000 or above required) [-Wcompatibility]
 ```
 
-Thus, to be able to run an `wasm64` binary you will need to download at least `node/23` manually in your system.
+This differs by SDK series:
+
+| SDK | bundled `node` | runs `wasm64` directly |
+|---|---|---|
+| `emsdk/5.0.3` | 22.16.0 | no — install `node/23+` separately |
+| `emsdk/6.0.13` | 24.19.0 | yes |
+
+So the manual `node` step is only needed on the 5.x series.
 
 ### 🧠 Dynamic Memory Allocation
 
