@@ -5,3 +5,15 @@ sources:
   "6.0.13":
     url: "https://github.com/emscripten-core/emsdk/archive/6.0.13.tar.gz"
     sha256: "8c04da75eeceb015e766f4766b713bae0dbb9156ceaacf3cf353585b88656114"
+# Ports built by `embuilder build MINIMAL`, with the URL of upstream/emscripten/tools/ports/<name>.py
+ports:
+  "5.0.3":
+    bullet:
+      # packaged so that finalize() does not download it from GitHub
+      # https://github.com/conan-io/conan-toolchains/issues/16
+      url: "https://github.com/emscripten-ports/bullet/archive/version_1.zip"
+      sha256: "1fab6669ed4f00513f17a5ca85b81ab44b3b446aad40c334ee1030e0bc0f991a"
+  "6.0.13":
+    bullet:
+      url: "https://github.com/emscripten-ports/bullet/archive/version_1.zip"
+      sha256: "1fab6669ed4f00513f17a5ca85b81ab44b3b446aad40c334ee1030e0bc0f991a"
