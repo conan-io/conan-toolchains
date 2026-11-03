@@ -5,6 +5,7 @@ from conan import ConanFile
 from conan.tools.env import VirtualBuildEnv
 from conan.tools.files import chdir, copy, get
 from conan.tools.layout import basic_layout
+from conan.tools.scm import Version
 
 required_conan_version = ">=2.1"
 
@@ -57,15 +58,15 @@ class EmSDKConan(ConanFile):
 
     def finalize(self):
         copy(self, "*", src=self.immutable_package_folder, dst=self.package_folder)
-        embuilder = os.path.join(
-            self._emscripten, "embuilder" if self.info.settings.os != "Windows" else "embuilder.bat"
-        )
+        embuilder = self._define_tool_var("embuilder", self.info.settings.os)
         self.run(f"{embuilder} build MINIMAL")
 
-    def _define_tool_var(self, value):
-        suffix = ".bat" if self.settings.os == "Windows" else ""
-        path = os.path.join(self._emscripten, f"{value}{suffix}")
-        return path
+    def _define_tool_var(self, value, os_name=None):
+        # Emscripten >= 6 ships native .exe launchers on Windows, .bat files were removed
+        suffix = ""
+        if (os_name or self.settings.os) == "Windows":
+            suffix = ".exe" if Version(self.version) >= "6" else ".bat"
+        return os.path.join(self._emscripten, f"{value}{suffix}")
 
     def package_info(self):
         self.cpp_info.bindirs = ["bin", os.path.join("bin", "upstream", "emscripten"), self._node_path]
