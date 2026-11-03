@@ -1,0 +1,23 @@
+sources:
+  "4.12.1":
+    Linux:
+      x86_64:
+        url: "https://github.com/ccache/ccache/releases/download/v4.12.1/ccache-4.12.1-linux-x86_64.tar.xz"
+        sha256: "742e6a6e17c0a060046874eece2949b221c228e1119698a4c6e0b096cbc87152"
+      armv8:
+        url: "https://github.com/ccache/ccache/releases/download/v4.12.1/ccache-4.12.1-linux-aarch64.tar.xz"
+        sha256: "05d349e8f14aebecce13102e803a441b7466b91c01b943bb744ad1db754434e0"
+    Macos:
+      universal:
+        url: "https://github.com/ccache/ccache/releases/download/v4.12.1/ccache-4.12.1-darwin.tar.gz"
+        sha256: "95cb03de0f2e0edb264d2443f2fe4500a13086689cc9ecd1095eb274dd8d9aee"
+    Windows:
+      armv8:
+        url: "https://github.com/ccache/ccache/releases/download/v4.12.1/ccache-4.12.1-windows-aarch64.zip"
+        sha256: "a846c1e75c90178b8a5e369eba8658e6bbca5b3a8de9225b8f43efa7ff5b2116"
+      x86:
+        url: "https://github.com/ccache/ccache/releases/download/v4.12.1/ccache-4.12.1-windows-i686.zip"
+        sha256: "2012b76631366dded52c3a983d8bda154dd76badb05bd6d8cde63e184cd5538a"
+      x86_64:
+        url: "https://github.com/ccache/ccache/releases/download/v4.12.1/ccache-4.12.1-windows-x86_64.zip"
+        sha256: "98aea520d66905b8ba7a8e648a4cc0ca941d5e119d441f1e879a4a9045bf18f6"
